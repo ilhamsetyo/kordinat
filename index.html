@@ -1,1 +1,118 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wajib Aktifkan Lokasi</title>
 
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+    }
+
+    .box {
+      padding: 30px;
+      max-width: 400px;
+    }
+
+    button {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      background: #00b894;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+
+    #lokasi {
+      margin-top: 20px;
+      word-break: break-all;
+      color: #00ffcc;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="box">
+    <h1>Aktifkan Lokasi</h1>
+
+    <p>
+      Website ini membutuhkan akses lokasi GPS untuk melanjutkan.
+    </p>
+
+    <button onclick="mintaLokasi()">
+      Izinkan Lokasi
+    </button>
+
+    <div id="lokasi"></div>
+  </div>
+
+  <script>
+
+    // otomatis minta saat halaman dibuka
+    window.onload = function() {
+      mintaLokasi();
+    }
+
+    function mintaLokasi() {
+
+      if (!navigator.geolocation) {
+        alert("Browser tidak mendukung GPS");
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        sukses,
+        gagal,
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0
+        }
+      );
+    }
+
+    function sukses(position) {
+
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
+
+      document.getElementById("lokasi").innerHTML = `
+        Latitude: ${lat}<br>
+        Longitude: ${lng}
+      `;
+
+      alert("Lokasi berhasil diambil!");
+    }
+
+    function gagal(error) {
+
+      if (error.code === error.PERMISSION_DENIED) {
+
+        alert(
+          "Izin lokasi ditolak!\n\n" +
+          "Silakan aktifkan manual:\n\n" +
+          "Klik ikon gembok/izin di browser lalu pilih IZINKAN."
+        );
+
+        // ulang terus meminta
+        setTimeout(() => {
+          mintaLokasi();
+        }, 3000);
+      }
+    }
+
+  </script>
+
+</body>
+</html>
